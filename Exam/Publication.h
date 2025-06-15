@@ -10,7 +10,7 @@ enum class PublicationType {
     MAGAZINE,
     THESIS,
     NEWSPAPER,
-    ADVERTISEMENT,   
+    ADVERTISEMENT,
     UNKNOWN
 };
 

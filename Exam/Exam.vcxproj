@@ -127,11 +127,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DateUtils.cpp" />
     <ClCompile Include="Exam.cpp" />
     <ClCompile Include="Library.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ArrayTemplate.h" />
+    <ClInclude Include="DateUtils.h" />
     <ClInclude Include="Library.h" />
     <ClInclude Include="Publication.h" />
   </ItemGroup>

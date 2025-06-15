@@ -16,4 +16,3 @@ void loadPublicationsFromFile(Publication*& publications, int& count, const stri
 int getPublicationIndexById(Publication* publications, int count, int id);
 
 #endif 
-

@@ -1,11 +1,10 @@
 #include "Library.h"
-#include "ArrayTemplate.h"   
+#include "ArrayTemplate.h"
+#include "DateUtils.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <cstdlib>
 #include <limits>
-
 using namespace std;
 
 int getPublicationIndexById(Publication* publications, int count, int id) {
@@ -25,33 +24,30 @@ void addPublication(Publication*& publications, int& count) {
 
     int typeChoice;
     cout << "Choose publication type: \n1. Book\n2. Magazine\n3. Thesis\n4. Newspaper\n";
-    cout << "Enter your choice: ";
     cin >> typeChoice;
     cin.ignore();
-
-    switch (typeChoice) {
-    case 1: newPub.type = PublicationType::BOOK; break;
-    case 2: newPub.type = PublicationType::MAGAZINE; break;
-    case 3: newPub.type = PublicationType::THESIS; break;
-    case 4: newPub.type = PublicationType::NEWSPAPER; break;
-    default: newPub.type = PublicationType::UNKNOWN; break;
-    }
+    if (typeChoice >= 1 && typeChoice <= 4)
+        newPub.type = static_cast<PublicationType>(typeChoice);
+    else
+        newPub.type = PublicationType::UNKNOWN;
 
     cout << "Enter title: ";
     getline(cin, newPub.title);
-
     cout << "Enter author: ";
     getline(cin, newPub.author);
 
+    string tmp;
     cout << "Enter issue date (YYYY-MM-DD): ";
-    getline(cin, newPub.issueDate);
+    getline(cin, tmp);
+    std::tm buf{};
+    if (parseDate(tmp, buf))  newPub.issueDate = tmp;
 
-    cout << "Enter return date (YYYY-MM-DD) (or leave empty if not applicable): ";
-    getline(cin, newPub.returnDate);
+    cout << "Enter return date (YYYY-MM-DD) (or leave empty): ";
+    getline(cin, tmp);
+    if (!tmp.empty() && parseDate(tmp, buf))    newPub.returnDate = tmp;
 
     addItemBack(publications, count, newPub);
-
-    cout << "Publication added successfully.\n";
+    cout << "Publication added.\n";
 }
 
 void removePublication(Publication*& publications, int& count) {
@@ -179,7 +175,7 @@ void searchPublication(Publication* publications, int count) {
 }
 
 bool compareByID(Publication a, Publication b) {
-    return a.id > b.id; 
+    return a.id > b.id;
 }
 
 bool compareByTitle(Publication a, Publication b) {
@@ -215,16 +211,15 @@ void sortPublications(Publication* publications, int count) {
 
 
 void displayPublications(Publication* publications, int count) {
-    if (count == 0) {
-        cout << "No publications available.\n";
+    if (count == 0) { cout << "No publications.\n"; return; }
+    for (int i = 0;i < count;i++) {
+        cout << publications[i] << '\n';
+        if (!publications[i].returnDate.empty() &&
+            dateInPast(publications[i].returnDate))
+            cout << "   !!! OVERDUE !!!\n";
+        cout << "-----------------------\n";
     }
-    else {
-        for (int i = 0; i < count; i++) {
-            cout << publications[i] << endl;
-            cout << "-----------------------\n";
-        }
-    }
-    cout << "Press Enter to the menu...";
+    cout << "Press Enter to menu...";
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 }
 
@@ -256,7 +251,7 @@ void loadPublicationsFromFile(Publication*& publications, int& count, const stri
     }
     int newCount;
     inFile >> newCount;
-    inFile.ignore(); 
+    inFile.ignore();
 
     if (publications != nullptr) {
         delete[] publications;
