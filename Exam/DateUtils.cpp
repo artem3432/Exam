@@ -1,12 +1,13 @@
 #include "DateUtils.h"
 #include <cstdlib>
+using namespace std;
 
-bool parseDate(const std::string& iso, std::tm& out)
+bool parseDate(const string& iso, tm& out)
 {
     if (iso.size() != 10 || iso[4] != '-' || iso[7] != '-') return false;
-    int y = std::atoi(iso.substr(0, 4).c_str());
-    int m = std::atoi(iso.substr(5, 2).c_str());
-    int d = std::atoi(iso.substr(8, 2).c_str());
+    int y = atoi(iso.substr(0, 4).c_str());
+    int m = atoi(iso.substr(5, 2).c_str());
+    int d = atoi(iso.substr(8, 2).c_str());
     if (y < 1900 || m < 1 || m>12 || d < 1 || d>31) return false;
 
     out = {};
@@ -16,12 +17,12 @@ bool parseDate(const std::string& iso, std::tm& out)
     return true;
 }
 
-bool dateInPast(const std::string& iso)
+bool dateInPast(const string& iso)
 {
-    std::tm dt{};
+    tm dt{};
     if (!parseDate(iso, dt)) return false;
-    auto now = std::time(nullptr);
-    std::tm nowTm{};
+    auto now = time(nullptr);
+    tm nowTm{};
     if (localtime_s(&nowTm, &now) != 0) return false; 
-    return std::difftime(std::mktime(&nowTm), std::mktime(&dt)) > 0;
+    return difftime(mktime(&nowTm), mktime(&dt)) > 0;
 }

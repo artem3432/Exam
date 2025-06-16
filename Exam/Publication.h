@@ -28,17 +28,17 @@ inline string publicationTypeToString(PublicationType type) {
 struct Publication {
     int id;
     PublicationType type;
-    std::string title;
-    std::string author;
-    std::string issueDate;
-    std::string returnDate;
+    string title;
+    string author;
+    string issueDate;
+    string returnDate;
 
     Publication() : id(0), type(PublicationType::UNKNOWN),
         title(""), author(""), issueDate(""), returnDate("") {
     }
 
-    Publication(int id, PublicationType type, const std::string& title, const std::string& author,
-        const std::string& issueDate, const std::string& returnDate)
+    Publication(int id, PublicationType type, const string& title, const string& author,
+        const string& issueDate, const string& returnDate)
         : id(id), type(type), title(title), author(author), issueDate(issueDate), returnDate(returnDate) {
     }
 };
